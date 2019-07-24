@@ -1,0 +1,51 @@
+﻿#FileName	Type	Tab
+MM Refresher Penetration	Penetration	MM Refresh
+MM Refresher Oppo	Oppo	MM Refresh
+
+Barqs Penetration	Penetration	Barq's Craft
+Barqs Oppo	Oppo	Barq's Craft
+
+A&W 222ml Penetration	Penetration	A&W 222
+A&W 222ml Oppo	Oppo	A&W 222
+
+Coke Origins Penetration	Penetration	Origins
+Coke Origins Oppo	Oppo	Origins
+
+Dasani Spk Lime Oppo	Oppo	Dasani Lime
+Dasani Spk Lime Penetration	Penetration	Dasani Lime
+
+Coke Mexico Oppo	Oppo	Mexi Coke
+Coke Mexico Penetration	Penetration	Mexi Coke
+
+Fruitwater Oppo	Oppo	Fruitwater
+FruitWater Penetration	Penetration	Fruitwater
+
+GP Slightly Sweet Lemon Oppo	Oppo	Gold Peak
+GP Slightly Sweet Lemon Penetration	Penetration	Gold Peak
+
+Monster Caffe Oppo	Oppo	Monster Caffe
+Monster Caffe Penetration	Penetration	Monster Caffe
+
+Monster Violet Oppo	Oppo	Ultra Violet 4pk
+Monster Violet Penetration	Penetration	Ultra Violet 4pk
+
+PA Twisted Bberry 946ml Oppo	Oppo	Twisted BB 946
+PA Twisted Bberry 946ml Penetration	Penetration	Twisted BB 946
+
+PA Twisted BBerry 6 by 591ml Oppo	Oppo	Twisted BB 591
+PA Twisted BBerry 6 by 591ml Penetration	Penetration	Twisted BB 591
+
+PA Ultra Oppo	Oppo	PA Ultra
+PA Ultra Penetration	Penetration	PA Ultra
+
+PA Zero Grape 710ml Oppo	Oppo	PA Zero Grape
+PA Zero Grape 710ml Penetration	Penetration	PA Zero Grape
+
+Sprite Zero Oppo	Oppo	Sprite Zero
+Sprite Zero Penetration	Penetration	Sprite Zero
+
+Monster 8 by 310ml Oppo	Oppo	Monster 8x310
+Monster 8 by 310ml Penetration	Penetration	Monster 8x310
+
+Coke mini bottles Oppo	Oppo	Mini Bottle
+Coke mini bottles Penetration	Penetration	Mini Bottle
