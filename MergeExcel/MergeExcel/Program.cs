@@ -17,6 +17,14 @@ namespace MergeExcel
         public double PassedRate { get; set; }
         public bool IsUsed { get; set; }
     }
+
+    class ManagerPenetration
+    {
+        public string ManagerName { get; set; }
+        public double PassRate { get; set; }
+        public bool IsTop { get; set; }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -69,8 +77,9 @@ namespace MergeExcel
                 Console.WriteLine("\tProcessing " + fileName);
 
                 Workbook excelWorkBook = excelApp.Workbooks.Open(fileName);
-                string workSheetName = config.WorkSheetName;
                 Worksheet excelWorkSheet = (Worksheet)excelWorkBook.Worksheets[1];
+
+                string workSheetName = config.WorkSheetName;
                 Worksheet excelTemplateWorkSheet = (Worksheet)excelTemplateWorkbook.Worksheets[workSheetName];
                 Console.WriteLine("\tCopying Data Starts");
 
@@ -116,7 +125,8 @@ namespace MergeExcel
                         }
 
                         int rowIndexSourceStart = 1;
-                        while (excelWorkSheet.Cells[rowIndexSourceStart, 2] == null || string.IsNullOrWhiteSpace(excelWorkSheet.Cells[rowIndexSourceStart, 2].Value2))
+                        while (excelWorkSheet.Cells[rowIndexSourceStart, 2] == null 
+                            || string.IsNullOrWhiteSpace(excelWorkSheet.Cells[rowIndexSourceStart, 2].Value2))
                         {
                             rowIndexSourceStart++;
                         }
@@ -289,6 +299,81 @@ namespace MergeExcel
                         Range missedDataSumRange = excelTemplateWorkSheet.Range["E" + (rowIndexTemplateListPen - 1), "G" + rowIndexTemplateListPen];
                         missedDataSumRange.Font.Bold = true;
                         missedDataSumRange.Interior.Color = ColorTranslator.ToOle(Color.WhiteSmoke);
+                    }
+                }
+                else if (config.FileType == "DSM")
+                {
+                    excelTemplateWorkSheet = (Worksheet)excelTemplateWorkbook.Worksheets[config.FileType];
+                    int rowIndexSourceStart = 1;
+                    while (excelWorkSheet.Cells[rowIndexSourceStart, 2] == null
+                            || string.IsNullOrWhiteSpace(excelWorkSheet.Cells[rowIndexSourceStart, 2].Value2))
+                    {
+                        rowIndexSourceStart++;
+                    }
+                    rowIndexSourceStart++;
+                    Dictionary<string, ManagerPenetration> penMapping = new Dictionary<string, ManagerPenetration>();
+                    while (excelWorkSheet.Cells[rowIndexSourceStart, 1].Value2.ToLower() != "totals")
+                    {
+                        string managerName = excelWorkSheet.Cells[rowIndexSourceStart, 1].Value2;
+                        double passedRate = excelWorkSheet.Cells[rowIndexSourceStart, 4].Value2;
+                        ManagerPenetration pen = new ManagerPenetration()
+                        {
+                            ManagerName = managerName,
+                            PassRate = passedRate,
+                            IsTop = false
+                        };
+                        penMapping.Add(managerName, pen);
+                        rowIndexSourceStart++;
+                    }
+
+                    var topOnes = penMapping.OrderByDescending(i => i.Value.PassRate).Select(i => i.Key).Take(3);
+                    foreach (var item in topOnes)
+                    {
+                        penMapping[item].IsTop = true;
+                    }
+
+                    int headerRowIndexTemplate = 8;
+                    int headerColumnIndexTemplate = 4;
+                    string name = excelTemplateWorkSheet.Cells[headerRowIndexTemplate, headerColumnIndexTemplate].Value2;
+                    while (name.ToLower() != "average" && name != config.WorkSheetName)
+                    {
+                        headerColumnIndexTemplate++;
+                        name = excelTemplateWorkSheet.Cells[headerRowIndexTemplate, headerColumnIndexTemplate].Value2;
+                    }
+
+                    if (name.ToLower() == "average")
+                    {
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\tDSM Pnetration Header loopup failed! DSM worksheet doesn't contains column for {0}", config.WorkSheetName);
+                        swErrorFile.WriteLine("DSM Pnetration Header Check failed when processing: {0}", fileName);
+                        Console.ResetColor();
+                        excelWorkBook.Close(false, null, null);
+                        Marshal.ReleaseComObject(excelWorkSheet);
+                        Marshal.ReleaseComObject(excelWorkBook);
+                        continue;
+                    }
+
+                    int managerColumnIndexTemplate = 3;
+                    headerRowIndexTemplate++;
+                    while (excelTemplateWorkSheet.Cells[headerRowIndexTemplate, managerColumnIndexTemplate] != null 
+                        && !string.IsNullOrWhiteSpace(excelTemplateWorkSheet.Cells[headerRowIndexTemplate, managerColumnIndexTemplate].Value2))
+                    {
+                        string managerName = excelTemplateWorkSheet.Cells[headerRowIndexTemplate, managerColumnIndexTemplate].Value2;
+                        if (penMapping.ContainsKey(managerName))
+                        {
+                            excelTemplateWorkSheet.Cells[headerRowIndexTemplate, headerColumnIndexTemplate].Value2 = penMapping[managerName].PassRate;
+                            if (penMapping[managerName].IsTop)
+                            {
+                                excelTemplateWorkSheet.Cells[headerRowIndexTemplate, headerColumnIndexTemplate].Interior.Color = ColorTranslator.ToOle(Color.Yellow);
+                            }
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\tDSM Pnetration Processing: Manager name {0} was not found in data source!", managerName);
+                            Console.ResetColor();
+                        }
+                        headerRowIndexTemplate++;
                     }
                 }
 
